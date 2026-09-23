@@ -31,22 +31,26 @@ Route::get('/dashboard', function (Request $request) {
     $lang = session('app_locale', 'es');
     $search = $request->get('search');
 
-    $query = Post::query();
-
-    if ($search) {
+    $posts = Post::when($search, function ($query, $search) {
         $query->where(function($q) use ($search) {
             $q->where('title', 'like', "%{$search}%")
-              ->orWhere('title_en', "%{$search}%");
+              ->orWhere('title_en', 'like', "%{$search}%");
         });
-    }
-
-    $posts = $query->paginate(20)->withQueryString();
+    })
+    ->latest()
+    ->paginate(20)
+    ->withQueryString();
 
     $posts->getCollection()->transform(function ($post) use ($lang) {
         $post->display_title = ($lang === 'en' && !empty($post->title_en)) ? $post->title_en : $post->title;
         $post->display_excerpt = ($lang === 'en' && !empty($post->excerpt_en)) ? $post->excerpt_en : ($post->excerpt ?? $post->content);
         return $post;
     });
+
+    // Si es una petición AJAX, podemos retornar solo las filas o la tabla parcial si gustas
+    if ($request->ajax()) {
+        return view('admin.dashboard', compact('posts', 'search'))->render();
+    }
 
     return view('admin.dashboard', compact('posts', 'search'));
 })->middleware(['auth', 'verified'])->name('dashboard');
