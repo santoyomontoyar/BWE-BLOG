@@ -14,9 +14,9 @@
         <div>
             <h1 class="text-2xl font-bold mb-8 tracking-wider">BLOGS</h1>
             <nav class="space-y-2">
-                <a href="#" class="block py-2.5 px-4 rounded transition bg-blue-800 font-semibold">+ New Blog</a>
+                <a href="/blogs/create" class="block py-2.5 px-4 rounded transition bg-blue-800 font-semibold">+ New Blog</a>
                 <a href="/dashboard" class="block py-2.5 px-4 rounded transition hover:bg-blue-800">Dashboard</a>
-                <a href="#" class="block py-2.5 px-4 rounded transition hover:bg-blue-800">Categories</a>
+                <a href="/categories" class="block py-2.5 px-4 rounded transition hover:bg-blue-800">Categories</a>
             </nav>
         </div>
         <div>
