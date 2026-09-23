@@ -38,12 +38,15 @@ Route::get('/dashboard', function (Request $request) {
         });
     })
     ->latest()
-    ->paginate(20)
+    ->paginate(10)
     ->withQueryString();
 
     $posts->getCollection()->transform(function ($post) use ($lang) {
         $post->display_title = ($lang === 'en' && !empty($post->title_en)) ? $post->title_en : $post->title;
-        $post->display_excerpt = ($lang === 'en' && !empty($post->excerpt_en)) ? $post->excerpt_en : ($post->excerpt ?? $post->content);
+        $post->display_excerpt = \Illuminate\Support\Str::limit(
+    strip_tags(($lang === 'en' && !empty($post->excerpt_en)) ? $post->excerpt_en : ($post->excerpt ?? $post->content)),
+    200
+    );
         return $post;
     });
 
