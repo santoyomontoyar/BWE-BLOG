@@ -58,7 +58,7 @@
                     <!-- Columna Previsualización de Imagen -->
                     <td class="py-6 px-5 align-top">
                         @if($post->image_url)
-                            <img src="{{ asset($post->image_url) }}" alt="Miniatura" class="w-16 h-12 object-cover rounded-lg border border-gray-200 shadow-sm">
+                            <img src="{{ asset($post->image_url) }}" loading="lazy" decoding="async" width="64" height="48" alt="Miniatura" class="w-16 h-12 object-cover rounded-lg border border-gray-200 shadow-sm">
                         @else
                             <div class="w-16 h-12 bg-gray-100 rounded-lg flex items-center justify-center text-gray-400 text-xs font-medium">Sin img</div>
                         @endif
