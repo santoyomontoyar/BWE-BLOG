@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PostController;
 use Illuminate\Support\Facades\Route;
 use App\Models\Post;
 use Illuminate\Http\Request;
@@ -99,3 +100,11 @@ Route::delete('/categories/{id}', function ($id) {
     Category::findOrFail($id)->delete();
     return redirect('/categories')->with('success', '¡Categoría eliminada con éxito!');
 });
+
+Route::get('/blogs/{post}/edit', [PostController::class, 'edit'])->name('posts.edit');
+Route::put('/blogs/{post}', [PostController::class, 'update'])->name('posts.update');
+
+Route::get('/admin/papelera', [PostController::class, 'trash'])->name('admin.papelera');
+Route::delete('/blogs/{post}/destroy', [PostController::class, 'destroy'])->name('posts.destroy');
+Route::put('/admin/papelera/{id}/restore', [PostController::class, 'restore'])->name('admin.restore');
+Route::delete('/admin/papelera/{id}/force-delete', [PostController::class, 'forceDeleteNow'])->name('admin.forceDelete');

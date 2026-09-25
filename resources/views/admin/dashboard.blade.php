@@ -1,6 +1,28 @@
 @extends('layouts.admin')
 
 @section('content')
+
+        @if(session('success'))
+    <div
+        id="successMessage"
+        class="mb-6 flex items-center gap-3 rounded-xl border border-emerald-100 bg-emerald-50 px-5 py-4 text-sm text-emerald-700 shadow-sm"
+    >
+        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M5 13l4 4L19 7"
+            />
+        </svg>
+
+        <span class="font-medium">
+            {{ session('success') }}
+        </span>
+    </div>
+@endif
+
+
 <div class="flex justify-between items-center mb-8">
     <h2 class="text-3xl font-extrabold text-gray-900 tracking-tight">Blog</h2>
 </div>
@@ -58,8 +80,15 @@
                     <!-- Columna Previsualización de Imagen -->
                     <td class="py-6 px-5 align-top">
                         @if($post->image_url)
-                            <img src="{{ asset($post->image_url) }}" loading="lazy" decoding="async" width="64" height="48" alt="Miniatura" class="w-16 h-12 object-cover rounded-lg border border-gray-200 shadow-sm">
-                        @else
+    <img
+        src="{{ asset($post->image_url) }}"
+        loading="lazy"
+        decoding="async"
+        width="64"
+        height="48"
+        alt="Miniatura"
+        class="w-16 h-12 object-cover rounded-lg border border-gray-200 shadow-sm">
+@else
                             <div class="w-16 h-12 bg-gray-100 rounded-lg flex items-center justify-center text-gray-400 text-xs font-medium">Sin img</div>
                         @endif
                     </td>
@@ -79,10 +108,43 @@
                     </td>
                     
                     <!-- Columna Acciones -->
-                    <td class="py-6 px-5 text-center align-top">
-                        <div class="flex justify-center items-center gap-4 text-sm font-medium">
-                            <a href="#" class="text-emerald-600 hover:text-emerald-900 hover:underline">Editar</a>
-                            <button class="text-red-600 hover:text-red-900 hover:underline">Eliminar</button>
+                    <td class="py-6 px-5 text-center">
+                        <div class="inline-flex justify-center items-center gap-4 text-sm font-medium">
+                            <a href="{{ route('posts.edit', $post->id) }}" class="text-emerald-600 hover:text-emerald-900 hover:underline">Editar</a>
+                            
+                            <details class="relative">
+        <summary class="list-none cursor-pointer text-red-600 hover:text-red-900 hover:underline">
+            Eliminar
+        </summary>
+
+        <div class="absolute right-0 mt-2 w-64 bg-white border border-gray-200 rounded-xl shadow-lg p-4 z-20 text-left">
+            <p class="text-sm text-gray-700 mb-3">
+                ¿Seguro que deseas eliminar esta entrada?
+            </p>
+
+            <div class="flex justify-end gap-2">
+    <button
+        type="button"
+        onclick="this.closest('details').removeAttribute('open')"
+        class="w-24 h-9 text-xs text-center text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200"
+    >
+        Cancelar
+    </button>
+
+    <form action="{{ route('posts.destroy', $post->id) }}" method="POST" class="w-24">
+        @csrf
+        @method('DELETE')
+
+        <button
+            type="submit"
+            class="w-full h-9 text-xs text-center text-white bg-red-600 rounded-lg hover:bg-red-700"
+        >
+            Eliminar
+        </button>
+    </form>
+</div>
+        </div>
+    </details>
                         </div>
                     </td>
                 </tr>
@@ -186,4 +248,16 @@
             }, 250);
         });
     });
+
+        setTimeout(() => {
+    const message = document.getElementById('successMessage');
+
+    if (message) {
+        message.style.transition = 'opacity 0.4s ease';
+        message.style.opacity = '0';
+
+        setTimeout(() => message.remove(), 400);
+    }
+}, 3500);
+
 </script>
