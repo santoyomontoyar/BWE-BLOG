@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use App\Models\Category;
+use Illuminate\Support\Facades\Auth;
 
 class PostController extends Controller
 {
@@ -84,6 +85,77 @@ public function update(Request $request, Post $post)
         ->route('dashboard')
         ->with('success', 'Post actualizado exitosamente.');
 }
+
+
+    public function create()
+{
+    $categories = Category::all();
+
+    return view('admin.create', compact('categories'));
+}
+
+public function store(Request $request)
+{
+    $request->validate([
+        'title' => 'required|string|max:255',
+        'content' => 'required',
+        'title_en' => 'nullable|string|max:255',
+        'content_en' => 'nullable',
+        'seo_title' => 'nullable|string|max:255',
+        'seo_description' => 'nullable|string',
+        'seo_title_en' => 'nullable|string|max:255',
+        'seo_description_en' => 'nullable|string',
+        'excerpt' => 'nullable|string',
+        'excerpt_en' => 'nullable|string',
+        'slug' => 'nullable|string|max:255',
+        'slug_en' => 'nullable|string|max:255',
+        'image' => 'nullable|image|max:5120',
+        'categories' => 'nullable|array',
+        'categories.*' => 'exists:categories,id',
+    ]);
+
+    $post = new Post();
+    $post->user_id = Auth::id();
+
+
+    $post->title = $request->title;
+    $post->content = $request->content;
+    $post->title_en = $request->title_en;
+    $post->content_en = $request->content_en;
+    $post->seo_title = $request->seo_title;
+    $post->seo_description = $request->seo_description;
+    $post->seo_title_en = $request->seo_title_en;
+    $post->seo_description_en = $request->seo_description_en;
+    $post->excerpt = $request->excerpt;
+    $post->excerpt_en = $request->excerpt_en;
+    $post->slug = $request->slug;
+    $post->slug_en = $request->slug_en;
+
+    // Checkbox "ver portada"
+    $post->view_cover = $request->has('view_cover');
+
+    // Imagen
+    if ($request->hasFile('image')) {
+
+        $image = $request->file('image');
+
+        $imageName = time() . '.' . $image->getClientOriginalExtension();
+
+        $image->move(public_path('images-post'), $imageName);
+
+        $post->image_url = 'images-post/' . $imageName;
+    }
+
+    $post->save();
+
+    // Asignar categorías
+    $post->categories()->sync($request->categories ?? []);
+
+    return redirect()
+        ->route('dashboard')
+        ->with('success', 'Post creado exitosamente.');
+}
+
 
     public function destroy($id)
     {

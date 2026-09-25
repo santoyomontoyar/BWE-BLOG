@@ -18,9 +18,7 @@ Route::get('/dashboard', function () {
 });
 
 // Vista del formulario para crear un nuevo blog
-Route::get('/blogs/create', function () {
-    return view('admin.create');
-});
+Route::get('/blogs/create', [PostController::class, 'create'])->name('posts.create');
 
 // Opcional: Redirigir la raíz del sitio directamente al login
 Route::get('/', function () {
@@ -104,7 +102,12 @@ Route::delete('/categories/{id}', function ($id) {
 Route::get('/blogs/{post}/edit', [PostController::class, 'edit'])->name('posts.edit');
 Route::put('/blogs/{post}', [PostController::class, 'update'])->name('posts.update');
 
+Route::get('/blogs/create', [PostController::class, 'create'])->name('posts.create')->middleware(['auth', 'verified']);
+Route::post('/blogs', [PostController::class, 'store'])->name('posts.store')->middleware(['auth', 'verified']);
+
+
 Route::get('/admin/papelera', [PostController::class, 'trash'])->name('admin.papelera');
 Route::delete('/blogs/{post}/destroy', [PostController::class, 'destroy'])->name('posts.destroy');
 Route::put('/admin/papelera/{id}/restore', [PostController::class, 'restore'])->name('admin.restore');
 Route::delete('/admin/papelera/{id}/force-delete', [PostController::class, 'forceDeleteNow'])->name('admin.forceDelete');
+
