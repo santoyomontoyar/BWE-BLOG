@@ -111,3 +111,18 @@ Route::delete('/blogs/{post}/destroy', [PostController::class, 'destroy'])->name
 Route::put('/admin/papelera/{id}/restore', [PostController::class, 'restore'])->name('admin.restore');
 Route::delete('/admin/papelera/{id}/force-delete', [PostController::class, 'forceDeleteNow'])->name('admin.forceDelete');
 
+
+// CSS consumible por otros proyectos
+Route::get('/api/styles/app.css', function () {
+    $manifest = json_decode(
+        file_get_contents(public_path('build/manifest.json')),
+        true
+    );
+
+    $cssFile = $manifest['resources/css/app.css']['file'];
+
+    return response()->file(
+        public_path('build/' . $cssFile),
+        ['Content-Type' => 'text/css']
+    );
+});
