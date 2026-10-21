@@ -521,7 +521,7 @@
      TINYMCE
 ============================================================= --}}
 <script
-    src="https://cdn.tiny.cloud/1/swq9tj1m3a4lggq4y82tjtjyyl3umu1i3phz6cmjfylsawud/tinymce/8/tinymce.min.js"
+    src="https://cdn.tiny.cloud/1/ba780u2vxlhuxse5844ih0sjnx9x06tizwzr0wqkt3qsopd2/tinymce/8/tinymce.min.js"
     referrerpolicy="origin"
     crossorigin="anonymous">
 </script>
